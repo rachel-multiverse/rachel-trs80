@@ -347,6 +347,9 @@ do_connect:
         ld      de, (conn_port)
         call    connect_server
         jr      c, dc_fail
+        ; Send HELLO with player name and platform ID
+        call    rubp_init
+        call    send_hello
         xor     a
         ret
 dc_fail:

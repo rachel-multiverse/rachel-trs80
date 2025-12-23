@@ -80,23 +80,49 @@ player_id:      defw    0
 game_id:        defw    0
 
 ; -----------------------------------------------------------------------------
-; Send JOIN message
+; Send HELLO message with player name and platform ID
 ; -----------------------------------------------------------------------------
-send_join:
-        ld      a, MSG_JOIN
+send_hello:
+        ld      a, MSG_HELLO
         call    build_header
 
-        ; Clear payload
+        ; Clear payload first
         ld      hl, tx_buffer+16
         ld      b, 48
         xor     a
-sj_clear:
+sh_clear:
         ld      (hl), a
         inc     hl
-        djnz    sj_clear
+        djnz    sh_clear
+
+        ; Copy player name to payload bytes 0-15
+        ld      hl, player_name
+        ld      de, tx_buffer+16
+        ld      b, 16
+sh_name:
+        ld      a, (hl)
+        or      a
+        jr      z, sh_name_done
+        ld      (de), a
+        inc     hl
+        inc     de
+        djnz    sh_name
+sh_name_done:
+
+        ; Platform ID at payload bytes 16-17 (big-endian)
+        ; TRS-80 = 0x000A
+        ld      a, PLATFORM_ID_HI
+        ld      (tx_buffer+32), a       ; payload+16
+        ld      a, PLATFORM_ID_LO
+        ld      (tx_buffer+33), a       ; payload+17
 
         call    net_send
         ret
+
+; Default player name
+player_name:
+        defb    "TRS-80", 0
+        defs    9, 0                    ; Pad to 16 bytes
 
 ; -----------------------------------------------------------------------------
 ; Send READY message

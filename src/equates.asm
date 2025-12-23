@@ -55,8 +55,12 @@ PAYLOAD_START   equ     16
 PAYLOAD_SIZE    equ     48
 
 ; Message types
-MSG_JOIN        equ     $01
+MSG_HELLO       equ     $01             ; Initial connection with platform ID
 MSG_LEAVE       equ     $02
+
+; Platform ID (TRS-80 = 0x000A)
+PLATFORM_ID_HI  equ     $00
+PLATFORM_ID_LO  equ     $0A
 MSG_READY       equ     $03
 MSG_GAME_START  equ     $10
 MSG_GAME_STATE  equ     $11
