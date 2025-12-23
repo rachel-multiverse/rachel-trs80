@@ -1,0 +1,14 @@
+# Build output
+build/
+*.cmd
+*.cas
+*.dsk
+
+# Editor files
+*.swp
+*~
+.DS_Store
+
+# IDE
+.vscode/
+.idea/
